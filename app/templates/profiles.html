@@ -6,7 +6,7 @@
     {% for user in users %}
     <div class="profile">
         <div class = "img">
-            <img id="{{ user.firstname }}" src="url_for({{ user.dp }})" alt= "{{ user.firstname }}"  width="120" height="120"></img>
+            <img id="{{ user.firstname }}" src="{{ url_for('static', filename='uploads/'+ user.dp) }}" alt= "{{ user.firstname }}"  width="120" height="120"></img>
         </div>
         <div class="img">
             <h3> {{ user.firstname }}  {{ user.lastname }}</h3>

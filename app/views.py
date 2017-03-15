@@ -6,7 +6,7 @@ This file creates your application.
 """
 
 from app import app, db
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, jsonify
 from models import UserProfile
 from forms import UserForm
 import time, os
@@ -30,7 +30,7 @@ def about():
 def profile():
     form = UserForm()
     
-    if request.method == 'POST':
+    if request.method == 'GET':
         filefolder = app.config['UPLOAD_FOLDER']
         try:
             # Get validated data from form
@@ -48,7 +48,7 @@ def profile():
             date = time.strftime("%m/%d/%Y")
             
             dpname= secure_filename(dp.filename)
-            dst = filefolder + dpname
+            dst = fname + dpname
              
             
             # save user to database
@@ -71,10 +71,17 @@ def profile():
         
 @app.route("/profiles", methods=["GET", "POST"])
 def profiles():
+    user = UserProfile.query.all()
     if request.method == "GET":
-        user = UserProfile.query.all()
-
-    return render_template("profiles.html", users= user)
+        return render_template("profiles.html", users= user)
+    elif request.method == "POST":
+        if (typeof(Storage) != "undefined"):
+            for each in user:
+                localStorage.setItem('firstname', user.firstname)
+                localStorage.setItem("user_id", user.user_id)
+            return "JSON DATA"
+        else:
+            return "JSON not supported."
     
 @app.route("/profile/<userid>", methods=["GET","POST"])
 def userProfile(userid):
