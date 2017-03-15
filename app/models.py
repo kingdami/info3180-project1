@@ -1,7 +1,7 @@
 from . import db
 
 class UserProfile(db.Model):
-    id = db.Column(db.String(50), primary_key=True, unique=True)
+    user_id = db.Column(db.String(50), primary_key=True, unique=True)
     first_name = db.Column(db.String(80))
     last_name = db.Column(db.String(80))
     username = db.Column(db.String(80), unique=True)

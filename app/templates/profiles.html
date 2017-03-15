@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block main %}
+<h2> Users </h2><hr/>
+
+
+    {% for user in users %}
+    <div class="profile">
+        <div class = "img">
+            <img id="{{ user.firstname }}" src="url_for({{ user.dp }})" alt= "{{ user.firstname }}"  width="120" height="120"></img>
+        </div>
+        <div class="img">
+            <h3> {{ user.firstname }}  {{ user.lastname }}</h3>
+            <ul>
+                <li> <strong>Profile created on:</strong> {{ user.date_created }}</li>
+                <br/>
+                <li> <strong>Username: </strong> {{ user.username }}</li>
+                <li> <strong>User ID: </strong> {{ user.user_id }}</li>
+                <li> <strong>Gender: </strong> {{ user.gender }}</li>
+                <li> <strong>Age: </strong> {{ user.age }}</li><br/>
+                <li><p> {{ user.bio }}</p></li>
+            </ul>
+        </div>
+    </div>
+
+    {% endfor %}
+</ul><br/>
+
+{% endblock %}

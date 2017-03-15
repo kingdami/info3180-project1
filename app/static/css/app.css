@@ -1,3 +1,18 @@
 body {
     padding-top: 50px;
 }
+
+
+.img {
+    display: inline-block;
+    vertical-align: top;
+}
+
+ul {
+    list-style: none;
+}
+
+.profile{
+    padding: 10px;
+    border-bottom: 2px solid black;
+}
