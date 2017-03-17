@@ -30,7 +30,7 @@ def about():
 def profile():
     form = UserForm()
     
-    if request.method == 'GET':
+    if request.method == 'POST':
         filefolder = app.config['UPLOAD_FOLDER']
         try:
             # Get validated data from form
