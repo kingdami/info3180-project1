@@ -11,6 +11,7 @@ from models import UserProfile
 from forms import UserForm
 import time, os
 from werkzeug.utils import secure_filename
+import urllib,json
 
 ###
 # Routing for your application.
@@ -28,28 +29,32 @@ def about():
     
 @app.route('/profile', methods=["POST", "GET"])
 def profile():
-    form = UserForm()
+    form = UserForm(request.form)
     
-    if request.method == 'GET':
+    if request.method == 'POST':
+        
         filefolder = app.config['UPLOAD_FOLDER']
         try:
             # Get validated data from form
+            
             uid = str(request.form['lastname']) + str(request.form['firstname']) + str(request.form['age'])
             fname = request.form['firstname'] 
             lname = request.form['lastname']
             gender = request.form['gender']
             age = request.form['age']
+            print 'TEst'
             usr= request.form['username']
             bio = request.form['bio']
             
             dp = request.files['dp']
             
             
+            
             date = time.strftime("%m/%d/%Y")
             
             dpname= secure_filename(dp.filename)
             dst = fname + dpname
-             
+            
             
             # save user to database
             user = UserProfile(user_id =uid, first_name=fname, last_name=lname, username=usr, age=age, gender=gender, bio=bio, dp= dst, date_created=date)
@@ -57,8 +62,7 @@ def profile():
             db.session.add(user)
             db.session.commit()
             
-            
-            dp.save(os.path.join(filefolder,dpname))
+            dp.save(os.path.join(filefolder,dst))
 
             flash('User successfully added', 'success')
             next = request.args.get('next')
@@ -74,22 +78,31 @@ def profiles():
     user = UserProfile.query.all()
     if request.method == "GET":
         return render_template("profiles.html", users= user)
-    elif request.method == "POST":
-        if (typeof(Storage) != "undefined"):
-            for each in user:
-                localStorage.setItem('firstname', user.firstname)
-                localStorage.setItem("user_id", user.user_id)
-            return "JSON DATA"
-        else:
-            return "JSON not supported."
+    elif request.method == "POST" and request.headers.get('Content-Type') == "application/json":
+        userlist = []
+        for each in user:
+            users_list += [{"username":each.username, "userid":each.userid}]
+        jsonUsers = {"users":userlist}
+        return jsonify(jsonUsers)
+    else:
+        flash("Invalid Request.", "danger")
+        return redirect(url_for('home'))
+            
     
-@app.route("/profile/<userid>", methods=["GET","POST"])
+@app.route("/profiles/<userid>", methods=["GET","POST"])
 def userProfile(userid):
     if request.method=="GET":
         user = UserProfile.query.filter_by(user_id=userid).first()
         if user is not None:
-            return render_template('profiles.html', users = user)
-
+            return render_template('single_profile.html', user=user)
+        else: 
+            return render_template('404.html'), 404
+    elif request.method == "POST":
+        jsonUser = {}
+        jsonUser["userid"] = user.userid
+        jsonUser["username"] = user.username
+        return jsonify(jsonUser)
+        
 
 ###
 # The functions below should be applicable to all Flask apps.
@@ -120,5 +133,4 @@ def page_not_found(error):
 
 
 if __name__ == '__main__':
-    i = 0
     app.run(debug=True,host="0.0.0.0",port="8080")
