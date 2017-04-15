@@ -81,13 +81,18 @@ def profiles():
     elif request.method == "POST" and request.headers.get('Content-Type') == "application/json":
         userlist = []
         for each in user:
-            users_list += [{"username":each.username, "userid":each.userid}]
-        jsonUsers = {"users":userlist}
-        return jsonify(jsonUsers)
+            userlist += [{"username":each.username, "userid":each.userid}]
+        output = jsonify(users= userlist)
+        return output
     else:
         flash("Invalid Request.", "danger")
         return redirect(url_for('home'))
             
+        
+        #url = " https://info3180-project1-kingdami-1.c9users.io/"
+        #response = urllib.urlopen(url)
+        #data = json.loads(response.read())
+        #print data
     
 @app.route("/profiles/<userid>", methods=["GET","POST"])
 def userProfile(userid):
@@ -98,9 +103,7 @@ def userProfile(userid):
         else: 
             return render_template('404.html'), 404
     elif request.method == "POST":
-        jsonUser = {}
-        jsonUser["userid"] = user.userid
-        jsonUser["username"] = user.username
+        jsonUser = [{"userid": user.user_id, "username": user.username, "image": user.dp, "gender": user.gender, "age": user.age, "profile_create_on": user.date_created}]
         return jsonify(jsonUser)
         
 
