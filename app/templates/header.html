@@ -18,7 +18,7 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View Profiles <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="{{ url_for('profiles') }}">HTML</a></li>
-                <li><a href="#">JSON</a></li>
+                <li ><a id="json" href="{{ url_for('profiles') }}">JSON</a></li>
               </ul>
             </li>
             
@@ -26,3 +26,23 @@
         </div><!--/.nav-collapse -->
       </div>
 </nav>
+<script type=text/javascript>
+/* global $ */
+
+document.getElementById('json').onclick = function(e) {
+    e.preventDefault(); // cancel the link itself
+    var request = new XMLHttpRequest();
+    request.open("POST", "{{ url_for('profiles') }}", true);
+    request.setRequestHeader("Content-type", "application/json");
+   
+    request.send();
+    console.log("here");
+
+    request.onreadystatechange = function (response) { 
+    if (request.readyState == 4 && request.status == 200) {
+      console.log("here");
+      window.location.href = response;
+    }
+};
+};
+</script>
